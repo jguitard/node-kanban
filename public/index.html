@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html ng-app>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=1920, height=1080, initial-scale=1" />
+		<title>node-kanban</title>
+		<script src="/bower_components/angularjs/angular.min.js"></script>
+		<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+	</head>
+	<body>
+		<nav class="navbar navbar-default" role="navigation">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
+					<span class="sr-only">Mostrar menú</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">NodeKanban</a>
+			</div>
+			<div class="collapse navbar-collapse navbar-main-collapse">
+				<ul class="nav navbar-nav">
+					<li class="active dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							Tableros <b class="caret"></b>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="#">Proyecto 1</a></li>
+							<li><a href="#">Proyecto 2</a></li>
+							<li class="divider"></li>
+							<li><a href="#">Administrar tableros</a></li>
+							<!-- incluir popup para crear y deshabilitar tableros -->
+						</ul>
+					</li>
+					<li><a href="#">Administración</a></li>
+				</ul>
+				<form class="navbar-form navbar-right">
+					<div class="form-group">
+						<input type="text" class="form-control" placeholder="Buscar">
+					</div>
+				</form>
+			</div>
+		</nav>
+		<div class="table-responsive">
+			<table class="table table-condensed table-bordered">
+				<thead>
+					<tr>
+						<th rowspan="2" colspan="2">Tareas pendientes</th>
+						<th colspan="2">Desarrollo</th>
+						<th colspan="2">Testing</th>
+						<th rowspan="2">Finalizado</th>
+					</tr>
+					<tr>
+						<th>En progreso <span class="badge pull-right">12</span></th>
+						<th>Hecho <span class="badge pull-right">12</span></th>
+						<th>Pruebas unitarias <span class="badge pull-right">12</span></th>
+						<th>Pruebas de integración <span class="badge pull-right">12</span></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="success">
+						<th>Normal</th>
+						<td>
+							<div class="panel panel-primary">
+								<div class="panel-heading">
+									Hacer la maqueta de la interfaz de usuario
+								</div>
+								<div class="panel-body">
+									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
+									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
+									<div><span class="glyphicon glyphicon-minus"></span> API</div>
+								</div>
+								<div class="panel-footer">
+									<img class="img-rounded" src="http://api.randomuser.me/portraits/med/men/62.jpg" alt="Nombre" width="32" height="32">
+									<img class="img-rounded" src="http://api.randomuser.me/portraits/med/men/63.jpg" alt="Nombre" width="32" height="32">
+									<img class="img-rounded" src="http://api.randomuser.me/portraits/med/men/64.jpg" alt="Nombre" width="32" height="32">
+									y 3 más...
+								</div>
+							</div>
+						</td>
+						<td>
+							<div class="panel panel-primary">
+								<div class="panel-heading">Tarea 1</div>
+								<div class="panel-body">
+									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
+									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
+								</div>
+							</div>
+							<div class="panel panel-primary">
+								<div class="panel-heading">Tarea 1</div>
+								<div class="panel-body">
+									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
+									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
+								</div>
+							</div>
+						</td>
+						<td>
+							<div class="panel panel-primary">
+								<div class="panel-heading">Tarea 1</div>
+								<div class="panel-body">
+									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
+									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
+								</div>
+							</div>
+						</td>
+						<td>
+							<div class="panel panel-primary">
+								<div class="panel-heading">Tarea 1</div>
+								<div class="panel-body">
+									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
+									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
+								</div>
+							</div>
+						</td>
+						<td>
+							<div class="panel panel-primary">
+								<div class="panel-heading">Tarea 1</div>
+								<div class="panel-body">
+									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
+									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
+								</div>
+							</div>
+						</td>
+						<td>
+							<div class="panel panel-primary">
+								<div class="panel-heading">Tarea 1</div>
+								<div class="panel-body">
+									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
+									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr class="warning">
+						<th>Refactorización</th>
+						<td>
+							<div class="panel panel-primary">
+								<div class="panel-heading">Tarea 1</div>
+								<div class="panel-body">
+									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
+									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
+								</div>
+							</div>
+						</td>
+						<td>
+							<div class="panel panel-primary">
+								<div class="panel-heading">Tarea 1</div>
+								<div class="panel-body">
+									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
+									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
+								</div>
+							</div>
+							<div class="panel panel-primary">
+								<div class="panel-heading">Tarea 1</div>
+								<div class="panel-body">
+									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
+									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
+								</div>
+							</div>
+						</td>
+						<td>
+							<div class="panel panel-primary">
+								<div class="panel-heading">Tarea 1</div>
+								<div class="panel-body">
+									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
+									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
+								</div>
+							</div>
+						</td>
+						<td>
+							<div class="panel panel-primary">
+								<div class="panel-heading">Tarea 1</div>
+								<div class="panel-body">
+									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
+									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
+								</div>
+							</div>
+						</td>
+						<td>
+							<div class="panel panel-primary">
+								<div class="panel-heading">Tarea 1</div>
+								<div class="panel-body">
+									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
+									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
+								</div>
+							</div>
+						</td>
+						<td>
+							<div class="panel panel-primary">
+								<div class="panel-heading">Tarea 1</div>
+								<div class="panel-body">
+									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
+									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr class="danger">
+						<th>Expedito</th>
+						<td>
+							<div class="panel panel-primary">
+								<div class="panel-heading">Tarea 1</div>
+								<div class="panel-body">
+									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
+									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
+								</div>
+							</div>
+						</td>
+						<td colspan="2">
+							<div class="panel panel-primary">
+								<div class="panel-heading">Tarea 1</div>
+								<div class="panel-body">
+									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
+									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
+								</div>
+							</div>
+						</td>
+						<td colspan="2"></td>
+						<td></td>
+					</tr>	
+				</tbody>
+			</table>
+		</div>
+		<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+		<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	</body>
+</html>
