@@ -32,9 +32,20 @@ NodeKanban is intended to run on Raspberry Pi, under a almost minimal Raspbian o
 
 3. Insert the SD card in your computer, uncompress the ZIP archive and copy its contents to the SD card.
 
-4.Create a plain text file called installer-config.txt into the SD card. Add the following content and save it:
+4.Create a plain text file called post-install.txt into the SD card. Add the following content and save it:
 
-online_config=https://raw.githubusercontent.com/jguitard/node-kanban/master/install/online_config.sh
+	#!/bin/sh
+	apt-get update
+	apt-get -y upgrade
+	apt-get -y install raspi-copies-and-fills xinit unclutter nano matchbox x11-xserver-utils luakit xautomation git
+	echo "deb http://sm5.us/gonk wheezy main" >> /etc/apt/sources.list
+	apt-get update
+	apt-get -y install nodejs-latest
+	cd /srv/
+	git clone https://github.com/jguitard/node-kanban.git
+	chmod +x /srv/node-kanban/install/*.sh
+	echo "/srv/node-kanban/install/run.sh &" >> /etc/rc.local
+	reboot
 
 5. Eject the SD card from your computer. Don't forget to unmount (extract safely) the drive.
 
