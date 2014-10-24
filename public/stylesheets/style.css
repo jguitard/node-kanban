@@ -1,8 +1,9 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+.panel {
+	border-width: 3px;
+	border-color: lightgrey !important;
 }
 
-a {
-  color: #00B7FF;
+.panel-heading, .panel-body, .panel-footer {
+	padding: 5px;
 }
+
