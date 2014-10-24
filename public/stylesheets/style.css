@@ -1,9 +1,44 @@
+@font-face {
+    font-family: Signika;
+    src: url('fonts/Signika/Signika-Bold.ttf');
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: Signika;
+    src: url('fonts/Signika/Signika-Light.ttf');
+    font-weight: light;
+}
+
+@font-face {
+    font-family: Signika;
+    src: url('fonts/Signika/Signika-Regular.ttf');
+    font-weight: regular;
+}
+
+@font-face {
+    font-family: Signika;
+    src: url('fonts/Signika/Signika-Semibold.ttf');
+    font-weight: semibold;
+}
+
+body {
+	font-family: Signika;
+}
+
+th, tr {
+	vertical-align: top !important;
+}
+
 .panel {
 	border-width: 3px;
 	border-color: lightgrey !important;
 }
 
 .panel-heading, .panel-body, .panel-footer {
-	padding: 5px;
+	padding: 3px 5px;
 }
 
+.panel-body {
+	font-size: 85%;
+}
