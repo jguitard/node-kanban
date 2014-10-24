@@ -31,6 +31,7 @@ th, tr {
 }
 
 .panel {
+	max-width: 190px;
 	border-width: 3px;
 	border-color: lightgrey !important;
 }
@@ -41,4 +42,66 @@ th, tr {
 
 .panel-body {
 	font-size: 85%;
+}
+
+.glyphicon {
+	zoom: 85%;
+}
+
+.cos-1 .panel-heading {
+	background-color: rgba(255,63,63,0.3);
+	color: rgb(160,31,31);
+}
+
+.cos-2 .panel-heading {
+	background-color: rgba(63,255,63,0.3);
+	color: rgb(31,160,31);
+}
+
+.cos-3 .panel-heading {
+	background-color: rgba(63,63,255,0.3);
+	color: rgb(31,31,160);
+}
+
+.cos-4 .panel-heading {
+	background-color: rgba(255,255,63,0.3);
+	color: rgb(160,160,31);
+}
+
+.cos-5 .panel-heading {
+	background-color: rgba(255,63,255,0.3);
+	color: rgba(160,31,160);
+}
+
+.cos-6 .panel-heading {
+	background-color: rgba(63,255,255,0.3);
+	color: rgba(31,160,160);
+}
+
+.cos span {
+	margin-left: 10px;
+}
+
+.cos .cos-1 {
+	color: rgb(160,31,31);
+}
+
+.cos .cos-2 {
+	color: rgb(31,160,31);
+}
+
+.cos .cos-3 {
+	color: rgb(31,31,160);
+}
+
+.cos .cos-4 {
+	color: rgb(160,160,31);
+}
+
+.cos .cos-5 {
+	color: rgb(160,31,160);
+}
+
+.cos .cos-6 {
+	color: rgb(31,160,160);
 }
