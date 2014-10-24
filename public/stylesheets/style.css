@@ -1,31 +1,3 @@
-@font-face {
-    font-family: Signika;
-    src: url('fonts/Signika/Signika-Bold.ttf');
-    font-weight: bold;
-}
-
-@font-face {
-    font-family: Signika;
-    src: url('fonts/Signika/Signika-Light.ttf');
-    font-weight: light;
-}
-
-@font-face {
-    font-family: Signika;
-    src: url('fonts/Signika/Signika-Regular.ttf');
-    font-weight: regular;
-}
-
-@font-face {
-    font-family: Signika;
-    src: url('fonts/Signika/Signika-Semibold.ttf');
-    font-weight: semibold;
-}
-
-body {
-	/*font-family: Signika;*/
-}
-
 th, tr {
 	vertical-align: top !important;
 }
@@ -78,30 +50,44 @@ th, tr {
 	color: rgba(31,160,160);
 }
 
-.cos span {
+.cos {
+	margin: 5px;
+	padding-bottom: 15px;
+}
+
+.cos > span {
 	margin-left: 10px;
+	padding: 5px;
+	border: 3px solid lightgrey;
+	border-radius: 5px;
 }
 
 .cos .cos-1 {
+	background-color: rgba(255,63,63,0.3);
 	color: rgb(160,31,31);
 }
 
 .cos .cos-2 {
+	background-color: rgba(263,255,63,0.3);
 	color: rgb(31,160,31);
 }
 
 .cos .cos-3 {
+	background-color: rgba(63,63,255,0.3);
 	color: rgb(31,31,160);
 }
 
 .cos .cos-4 {
+	background-color: rgba(255,255,63,0.3);
 	color: rgb(160,160,31);
 }
 
 .cos .cos-5 {
+	background-color: rgba(255,63,255,0.3);
 	color: rgb(160,31,160);
 }
 
 .cos .cos-6 {
+	background-color: rgba(63,255,255,0.3);
 	color: rgb(31,160,160);
 }
