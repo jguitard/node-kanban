@@ -40,11 +40,14 @@ NodeKanban is intended to run on Raspberry Pi, under a almost minimal Raspbian o
 	apt-get -y install raspi-copies-and-fills xinit unclutter nano matchbox x11-xserver-utils luakit xautomation git
 	echo "deb http://sm5.us/gonk wheezy main" >> /etc/apt/sources.list
 	apt-get update
-	apt-get -y install nodejs-latest
+	apt-get -y --force-yes install nodejs-latest
 	cd /srv/
 	git clone https://github.com/jguitard/node-kanban.git
 	chmod +x /srv/node-kanban/install/*.sh
+	mv /etc/rc.local /etc/rc.local.old
+	touch /etc/rc.local
 	echo "/srv/node-kanban/install/run.sh &" >> /etc/rc.local
+	echo "exit 0" >> /etc/rc.local
 	reboot
 
 5. Eject the SD card from your computer. Don't forget to unmount (extract safely) the drive.
