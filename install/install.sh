@@ -13,4 +13,5 @@
 	touch /etc/rc.local
 	echo "/srv/node-kanban/install/run.sh &" >> /etc/rc.local
 	echo "exit 0" >> /etc/rc.local
+	chmod +x /etc/rc.local
 	reboot
