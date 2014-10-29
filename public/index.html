@@ -1,14 +1,19 @@
 <!DOCTYPE html>
-<html ng-app>
+<html>
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=1920, height=1080, initial-scale=1" />
 		<title>node-kanban</title>
-		<script src="/bower_components/angularjs/angular.min.js"></script>
-		<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-		<link rel="stylesheet" href="/stylesheets/style.css">
+		<script src="bower_components/angular/angular.js"></script>
+		<script src="bower_components/angular-resource/angular-resource.min.js"></script>
+		
+		<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+		<link rel="stylesheet" href="stylesheets/style.css">
+		
+		<script src="javascripts/app.js"></script>
+		<script src="javascripts/controllers/BoardController.js"></script>
 	</head>
-	<body>
+	<body ng-app="KioskUIApp">
 		<nav class="navbar navbar-default" role="navigation">
 			<div class="navbar-header">
 				<div class="navbar-brand navbar-left">
@@ -23,19 +28,17 @@
 			</div>
 		</nav>
 		<div class="table-responsive">
-			<table class="table table-condensed table-bordered">
+			<table ng-controller="BoardController" class="table table-condensed table-bordered">
 				<thead>
 					<tr>
 						<th rowspan="2" colspan="2">Tareas pendientes</th>
-						<th colspan="2">Desarrollo</th>
-						<th colspan="2">Testing</th>
-						<th rowspan="2">Finalizado</th>
+						<th ng-repeat="stage in stages" colspan="{{ ((stage.wip.pre > 0)? 1 : 0) + ((stage.wip.task > 0)? 1 : 0) + ((stage.wip.post > 0)? 1 : 0) }}" rowspan="{{ ((((stage.wip.pre > 0)? 1 : 0) + ((stage.wip.task > 0)? 1 : 0) + ((stage.wip.post > 0)? 1 : 0)) > 1)? 1 : 2 }}">{{ stage.name }}</th>
+						<th rowspan="2" colspan="2">Finalizado</th>
 					</tr>
 					<tr>
-						<th>En progreso <span class="badge pull-right">12</span></th>
-						<th>Hecho <span class="badge pull-right">12</span></th>
-						<th>Pruebas unitarias <span class="badge pull-right">12</span></th>
-						<th>Pruebas de integración <span class="badge pull-right">12</span></th>
+						<th ng-repeat-start="stage in stages" ng-show="stage.wip.pre > 0">En espera <span class="badge pull-right">{{ stage.wip.pre }}</span></th>
+						<th ng-show="stage.wip.task > 0">En progreso <span class="badge pull-right">{{ stage.wip.task }}</span></th>
+						<th ng-show="stage.wip.post > 0" ng-repeat-end>Hecho <span class="badge pull-right">{{ stage.wip.post }}</span></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -211,7 +214,7 @@
 				<span class="cos-6"><span class="glyphicon glyphicon-tag"></span> clase2</span>
 			</div>
 		</div>
-		<script src="/bower_components/jquery/dist/jquery.min.js"></script>
-		<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+		<script src="bower_components/jquery/dist/jquery.min.js"></script>
+		<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	</body>
 </html>

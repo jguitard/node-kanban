@@ -3,9 +3,10 @@ th, tr {
 }
 
 .panel {
-	max-width: 190px;
+	max-width: 195px;
 	border-width: 3px;
 	border-color: lightgrey !important;
+	border-radius: 6px !important;
 }
 
 .panel-heading, .panel-body, .panel-footer {
@@ -59,7 +60,7 @@ th, tr {
 	margin-left: 10px;
 	padding: 5px;
 	border: 3px solid lightgrey;
-	border-radius: 5px;
+	border-radius: 6px;
 }
 
 .cos .cos-1 {
