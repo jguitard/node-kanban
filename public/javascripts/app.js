@@ -3,14 +3,14 @@
  * @name KioskUIApp
  */
 
-var KioskUIApp = angular.module('KioskUIApp', [ 'ngResource' ]); //$NON-NLS-1$
+var KioskUIApp = angular.module('KioskUIApp', [ 'ngResource' ]); //$NON-NLS-1$ $NON-NLS-2$
 
-KioskUIApp.factory('Stage', function($resource) {
+KioskUIApp.factory('Stage', function($resource) { //$NON-NLS-1$
 	// return $resource('/api/stages/:id"');
 	return {
 		query : function() {
 			return [ {
-				name : "Desarrollo",
+				name : "Desarrollo", //$NON-NLS-1$
 				priority : 1,
 				wip : {
 					pre : 2,
@@ -18,7 +18,7 @@ KioskUIApp.factory('Stage', function($resource) {
 					post : 3
 				}
 			}, {
-				name : "Testing",
+				name : "Testing", //$NON-NLS-1$
 				priority : 2,
 				wip : {
 					task : 2,
@@ -26,24 +26,24 @@ KioskUIApp.factory('Stage', function($resource) {
 				}
 			}, ];
 		}
-	}
+	};
 
 });
 
-KioskUIApp.factory('Swimlane', function($resource) {
+KioskUIApp.factory('Swimlane', function($resource) { //$NON-NLS-1$
 	// return $resource('/api/swimlanes/:id"');
 	return {
 		query : function() {
 			return [ {
-				name : "Proyecto 1"
+				name : "Proyecto 1" //$NON-NLS-1$
 			}, {
-				name : "Proyecto 2"
+				name : "Proyecto 2" //$NON-NLS-1$
 			}, {
-				name : "Expedito",
+				name : "Expedito", //$NON-NLS-1$
 				only_stages : {
 					pre : [],
-					main : [ "Desarrollo", "Testing" ],
-					post : [ "Testing" ]
+					main : [ "Desarrollo", "Testing" ], //$NON-NLS-1$ $NON-NLS-2$
+					post : [ "Testing" ] //$NON-NLS-1$
 				},
 				single_wip : true
 			}, ];
