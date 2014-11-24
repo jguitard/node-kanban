@@ -21,32 +21,38 @@ th, tr {
 	zoom: 85%;
 }
 
-.cos-1 .panel-heading {
+div.cos-1 .panel-heading,
+tr.cos-1 {
 	background-color: rgba(255,63,63,0.3);
 	color: rgb(160,31,31);
 }
 
-.cos-2 .panel-heading {
+div.cos-2 .panel-heading,
+tr.cos-2 {
 	background-color: rgba(63,255,63,0.3);
 	color: rgb(31,160,31);
 }
 
-.cos-3 .panel-heading {
+div.cos-3 .panel-heading,
+tr.cos-3 {
 	background-color: rgba(63,63,255,0.3);
 	color: rgb(31,31,160);
 }
 
-.cos-4 .panel-heading {
+div.cos-4 .panel-heading,
+tr.cos-4 {
 	background-color: rgba(255,255,63,0.3);
 	color: rgb(160,160,31);
 }
 
-.cos-5 .panel-heading {
+div.cos-5 .panel-heading,
+tr.cos-5 {
 	background-color: rgba(255,63,255,0.3);
 	color: rgba(160,31,160);
 }
 
-.cos-6 .panel-heading {
+div.cos-6 .panel-heading,
+tr.cos-6 {
 	background-color: rgba(63,255,255,0.3);
 	color: rgba(31,160,160);
 }

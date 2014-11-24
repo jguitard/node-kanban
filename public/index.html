@@ -13,7 +13,7 @@
 		<script src="javascripts/app.js"></script>
 		<script src="javascripts/controllers/BoardController.js"></script>
 	</head>
-	<body ng-app="KioskUIApp">
+	<body ng-app="NodeKanbanApp">
 		<nav class="navbar navbar-default" role="navigation">
 			<div class="navbar-header">
 				<div class="navbar-brand navbar-left">
@@ -27,8 +27,8 @@
 				Dirección IP: 123.234.255.23
 			</div>
 		</nav>
-		<div class="table-responsive">
-			<table ng-controller="BoardController" class="table table-condensed table-bordered">
+		<div ng-controller="BoardController" class="table-responsive">
+			<table class="table table-condensed table-bordered">
 				<thead>
 					<tr>
 						<th rowspan="2" colspan="2">Tareas pendientes</th>
@@ -42,176 +42,84 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<th>Normal</th>
+					<tr ng-repeat="swimlane in swimlanes">
+						<th>{{ swimlane.name }}</th>
 						<td>
-							<div class="panel cos-1">
+							<div class="panel cos-{{ task.cos }}" ng-repeat="task in tasks" ng-if="task.swimlane == swimlane.name && task.stage == '' && task.wip == 'pre'">
 								<div class="panel-heading">
-									Hacer la maqueta de la interfaz de usuario
+									<strong>#{{ task.id }}</strong> {{task.name}}
 								</div>
 								<div class="panel-body">
-									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
-									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
-									<div><span class="glyphicon glyphicon-minus"></span> API</div>
+									<div ng-repeat="item in task.items"><span class="glyphicon" ng-class="{ 'glyphicon-ok': item.done, 'glyphicon-minus': !item.done }"></span> {{ item.name }}</div>
 								</div>
 								<div class="panel-footer">
-									<img class="img-rounded" src="http://api.randomuser.me/portraits/med/men/62.jpg" alt="Nombre" width="32" height="32">
-									<img class="img-rounded" src="http://api.randomuser.me/portraits/med/men/63.jpg" alt="Nombre" width="32" height="32">
-									<img class="img-rounded" src="http://api.randomuser.me/portraits/med/men/64.jpg" alt="Nombre" width="32" height="32">
-									y 13 más...
+									<img ng-repeat="user in task.users" ng-if="$index + 1 <= 3" class="img-rounded" src="{{ user.picture }}" alt="{{ user.name }}" width="32" height="32">
+									<span ng-if="task.users.length > 3">y {{ task.users.length - 3 }} más...</span>
+								</div>
+							</div>
+						</td>
+						<td ng-repeat-start="stage in stages" ng-show="stage.wip.pre > 0" ng-style="{ 'visibility': ( ((swimlane.only_stages == undefined || (swimlane.only_stages != undefined && swimlane.only_stages.pre.indexOf(stage.name) != -1) ))? 'visible' : 'hidden' ) }">
+							<div class="panel cos-{{ task.cos }}" ng-repeat="task in tasks" ng-if="task.swimlane == swimlane.name && task.stage == stage.name && task.wip == 'pre'">
+								<div class="panel-heading">
+									<strong>#{{ task.id }}</strong> {{task.name}}
+								</div>
+								<div class="panel-body">
+									<div ng-repeat="item in task.items"><span class="glyphicon" ng-class="{ 'glyphicon-ok': item.done, 'glyphicon-minus': !item.done }"></span> {{ item.name }}</div>
+								</div>
+								<div class="panel-footer">
+									<img ng-repeat="user in task.users" ng-if="$index + 1 <= 3" class="img-rounded" src="{{ user.picture }}" alt="{{ user.name }}" width="32" height="32">
+									<span ng-if="task.users.length > 3">y {{ task.users.length - 3 }} más...</span>
+								</div>
+							</div>
+						</td>
+						<td ng-show="stage.wip.task > 0" ng-style="{ 'visibility': ( ((swimlane.only_stages == undefined || (swimlane.only_stages != undefined && swimlane.only_stages.task.indexOf(stage.name) != -1) ))? 'visible' : 'hidden' ) }">
+							<div class="panel cos-{{ task.cos }}" ng-repeat="task in tasks" ng-if="task.swimlane == swimlane.name && task.stage == stage.name && task.wip == 'task'">
+								<div class="panel-heading">
+									<strong>#{{ task.id }}</strong> {{task.name}}
+								</div>
+								<div class="panel-body">
+									<div ng-repeat="item in task.items"><span class="glyphicon" ng-class="{ 'glyphicon-ok': item.done, 'glyphicon-minus': !item.done }"></span> {{ item.name }}</div>
+								</div>
+								<div class="panel-footer">
+									<img ng-repeat="user in task.users" ng-if="$index + 1 <= 3" class="img-rounded" src="{{ user.picture }}" alt="{{ user.name }}" width="32" height="32">
+									<span ng-if="task.users.length > 3">y {{ task.users.length - 3 }} más...</span>
+								</div>
+							</div>
+						</td>
+						<td ng-show="stage.wip.post > 0" ng-style="{ 'visibility': ( ((swimlane.only_stages == undefined || (swimlane.only_stages != undefined && swimlane.only_stages.post.indexOf(stage.name) != -1) ))? 'visible' : 'hidden' ) }" ng-repeat-end>
+							<div class="panel cos-{{ task.cos }}" ng-repeat="task in tasks" ng-if="task.swimlane == swimlane.name && task.stage == stage.name && task.wip == 'post'">
+								<div class="panel-heading">
+									<strong>#{{ task.id }}</strong> {{task.name}}
+								</div>
+								<div class="panel-body">
+									<div ng-repeat="item in task.items"><span class="glyphicon" ng-class="{ 'glyphicon-ok': item.done, 'glyphicon-minus': !item.done }"></span> {{ item.name }}</div>
+								</div>
+								<div class="panel-footer">
+									<img ng-repeat="user in task.users" ng-if="$index + 1 <= 3" class="img-rounded" src="{{ user.picture }}" alt="{{ user.name }}" width="32" height="32">
+									<span ng-if="task.users.length > 3">y {{ task.users.length - 3 }} más...</span>
 								</div>
 							</div>
 						</td>
 						<td>
-							<div class="panel cos-2">
-								<div class="panel-heading">Tarea 1</div>
-								<div class="panel-body">
-									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
-									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
+							<div class="panel cos-{{ task.cos }}" ng-repeat="task in tasks" ng-if="task.swimlane == swimlane.name && task.stage == '' && task.wip == 'post'">
+								<div class="panel-heading">
+									<strong>#{{ task.id }}</strong> {{task.name}}
 								</div>
-							</div>
-							<div class="panel cos-3">
-								<div class="panel-heading">Tarea 1</div>
 								<div class="panel-body">
-									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
-									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
+									<div ng-repeat="item in task.items"><span class="glyphicon" ng-class="{ 'glyphicon-ok': item.done, 'glyphicon-minus': !item.done }"></span> {{ item.name }}</div>
 								</div>
-							</div>
-						</td>
-						<td>
-							<div class="panel cos-4">
-								<div class="panel-heading">Tarea 1</div>
-								<div class="panel-body">
-									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
-									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
-								</div>
-							</div>
-						</td>
-						<td>
-							<div class="panel cos-5">
-								<div class="panel-heading">Tarea 1</div>
-								<div class="panel-body">
-									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
-									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
-								</div>
-							</div>
-						</td>
-						<td>
-							<div class="panel cos-6">
-								<div class="panel-heading">Tarea 1</div>
-								<div class="panel-body">
-									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
-									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
-								</div>
-							</div>
-						</td>
-						<td>
-							<div class="panel cos-1">
-								<div class="panel-heading">Tarea 1</div>
-								<div class="panel-body">
-									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
-									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
+								<div class="panel-footer">
+									<img ng-repeat="user in task.users" ng-if="$index + 1 <= 3" class="img-rounded" src="{{ user.picture }}" alt="{{ user.name }}" width="32" height="32">
+									<span ng-if="task.users.length > 3">y {{ task.users.length - 3 }} más...</span>
 								</div>
 							</div>
 						</td>
 					</tr>
-					<tr>
-						<th>Refactorización</th>
-						<td>
-							<div class="panel cos-2">
-								<div class="panel-heading">Tarea 1</div>
-								<div class="panel-body">
-									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
-									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
-								</div>
-							</div>
-						</td>
-						<td>
-							<div class="panel cos-3">
-								<div class="panel-heading">Tarea 1</div>
-								<div class="panel-body">
-									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
-									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
-								</div>
-							</div>
-							<div class="panel cos-4">
-								<div class="panel-heading">Tarea 1</div>
-								<div class="panel-body">
-									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
-									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
-								</div>
-							</div>
-						</td>
-						<td>
-							<div class="panel cos-5">
-								<div class="panel-heading">Tarea 1</div>
-								<div class="panel-body">
-									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
-									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
-								</div>
-							</div>
-						</td>
-						<td>
-							<div class="panel cos-6">
-								<div class="panel-heading">Tarea 1</div>
-								<div class="panel-body">
-									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
-									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
-								</div>
-							</div>
-						</td>
-						<td>
-							<div class="panel cos-1">
-								<div class="panel-heading">Tarea 1</div>
-								<div class="panel-body">
-									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
-									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
-								</div>
-							</div>
-						</td>
-						<td>
-							<div class="panel cos-2">
-								<div class="panel-heading">Tarea 1</div>
-								<div class="panel-body">
-									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
-									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
-								</div>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<th>Expedito</th>
-						<td>
-							<div class="panel cos-3">
-								<div class="panel-heading">Tarea 1</div>
-								<div class="panel-body">
-									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
-									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
-								</div>
-							</div>
-						</td>
-						<td colspan="2">
-							<div class="panel cos-4">
-								<div class="panel-heading">Tarea 1</div>
-								<div class="panel-body">
-									<div><span class="glyphicon glyphicon-ok"></span> Interfaz</div>
-									<div><span class="glyphicon glyphicon-minus"></span> Base de datos</div>
-								</div>
-							</div>
-						</td>
-						<td colspan="2"></td>
-						<td></td>
-					</tr>	
 				</tbody>
 			</table>
 			<div class="pull-bottom pull-right cos">
 				<strong>Clases de servicio</strong>
-				<span class="cos-1"><span class="glyphicon glyphicon-tag"></span> Normal</span>
-				<span class="cos-2"><span class="glyphicon glyphicon-tag"></span> Prioritario</span>
-				<span class="cos-3"><span class="glyphicon glyphicon-tag"></span> Fecha fija</span>
-				<span class="cos-4"><span class="glyphicon glyphicon-tag"></span> Intangible</span>
-				<span class="cos-5"><span class="glyphicon glyphicon-tag"></span> clase1</span>
-				<span class="cos-6"><span class="glyphicon glyphicon-tag"></span> clase2</span>
+				<span class="cos-{{ class_of_service.priority }}" ng-repeat="class_of_service in classes_of_service"><span class="glyphicon glyphicon-tag"></span> {{ class_of_service.name }}</span>
 			</div>
 		</div>
 		<script src="bower_components/jquery/dist/jquery.min.js"></script>
