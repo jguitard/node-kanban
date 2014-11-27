@@ -76,11 +76,11 @@ NodeKanbanApp
 										cos : 1,
 										dates : {
 											request : new Date(
-													"October 10, 2014 01:00:00"),
+													"November 10, 2014 09:00:00"),
 											start : new Date(
-													"October 22, 2014 13:00:00"),
+													"November 18, 2014 13:00:00"),
 											delivery : new Date(
-													"November 01, 2014 19:00:00")
+													"November 24, 2014 19:00:00")
 
 										},
 										idle_time : 3,
@@ -124,6 +124,15 @@ NodeKanbanApp
 										stage : "",
 										wip : "pre",
 										cos : 2,
+										dates : {
+											request : new Date(
+													"November 19, 2014 12:00:00"),
+											start : new Date(
+													"November 20, 2014 18:00:00"),
+											delivery : new Date(
+													"November 22, 2014 19:00:00")
+
+										},
 										items : [ {
 											name : 'Interfaz',
 											done : false
@@ -167,6 +176,16 @@ NodeKanbanApp
 										stage : "Testing",
 										wip : "post",
 										cos : 3,
+										idle_time : 4,
+										dates : {
+											request : new Date(
+													"October 17, 2014 10:00:00"),
+											start : new Date(
+													"November 10, 2014 14:30:00"),
+											delivery : new Date(
+													"November 16, 2014 16:00:00")
+
+										},
 										items : [ {
 											name : 'Interfaz',
 											done : true
@@ -251,9 +270,8 @@ NodeKanbanApp.factory('ClassOfService', function($resource) { //$NON-NLS-1$
 	};
 });
 
-NodeKanban
-		.factory(
-				'Holiday',
-				function($resource) {
-					return $resource('http://www.google.com/calendar/feeds/cl__es%40holiday.calendar.google.com/public/full?alt=json&orderby=starttime&max-results=366&singleevents=true');
-				});
+/*
+ * NodeKanbanApp .factory( 'Holiday', function($resource) { return
+ * $resource('http://www.google.com/calendar/feeds/cl__es%40holiday.calendar.google.com/public/basic?alt=json&orderby=starttime&max-results=366&singleevents=true');
+ * });
+ */

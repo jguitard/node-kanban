@@ -53,15 +53,15 @@
 				</tfoot>
 				<tbody>
 					<tr class="cos-{{ task.cos }}" ng-repeat="task in tasks" ng-if="task.dates.delivery <= Date">
-						<td>{{ task.id }}</td>
+						<td class="text-right">{{ task.id }}</td>
 						<td>{{ task.name }}</td>
 						<td>{{ task.dates.request | date:'medium' }}</td>
 						<td>{{ task.dates.start | date:'medium' }}</td>
 						<td>{{ task.dates.delivery | date:'medium' }}</td>
-						<td>{{ task.idle_time }}</td>
-						<td>{{ Math.floor((task.dates.delivery - task.dates.request) / (60 * 60 * 24 * 1000)) }}</td>
-						<td>{{ Math.floor((task.dates.delivery - task.dates.start) / (60 * 60 * 24 * 1000)) }}</td>
-						<td>3</td>
+						<td class="text-right">{{ task.idle_time }}</td>
+						<td class="text-right">{{ Math.floor((task.dates.delivery - task.dates.request) / (60 * 60 * 24 * 1000)) }}</td>
+						<td class="text-right">{{ Math.floor((task.dates.delivery - task.dates.start) / (60 * 60 * 24 * 1000)) }}</td> <!--  falta restar numero de dias habiles entre ambas fechas -->
+						<td class="text-right">{{ (Math.floor((task.dates.delivery - task.dates.request) / (60 * 60 * 24 * 1000))) - task.idle_time }}</td>
 					</tr>
 				</tbody>
 			</table>
