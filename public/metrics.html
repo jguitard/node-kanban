@@ -4,10 +4,14 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=1920, height=1080, initial-scale=1" />
 		<title>node-kanban: Métricas</title>
+		<script src="bower_components/jquery/dist/jquery.min.js"></script>
 		<script src="bower_components/angular/angular.js"></script>
 		<script src="bower_components/angular-resource/angular-resource.min.js"></script>
 		
 		<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+		<link rel="stylesheet" href="bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css">
+		<link rel="stylesheet" href="bower_components/angular-datepicker/dist/index.min.css">
+		
 		<link rel="stylesheet" href="stylesheets/style.css">
 		
 		<script src="javascripts/app.js"></script>
@@ -28,12 +32,33 @@
 			</div>
 		</nav>
 		<div ng-controller="MetricsController" class="table-responsive">
-			<table class="table table-condensed table-bordered">
+			<div class="col-md-10">
+				<div class="col-md-2">
+		            <div class="form-group">
+						Desde
+						<div class="input-group date" id="date-from">
+							<input type="text" class="form-control" ng-model="dateFrom" ng-change="fetch()">
+							<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-2">
+					<div class="form-group">
+						Hasta
+						<div class="input-group date" id="date-to">
+							<input type="text" class="form-control" ng-model="dateTo" ng-change="fetch()">
+							<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+						</div>
+					</div>
+		        </div>
+			</div>
+			<table class="table table-condensed table-bordered" ng-if="(tasks | betweenDates:getDate(dateFrom):getDate(dateTo)).length > 0">
+				<caption><h4>Tareas en el rango de fechas</h4></caption>
 				<thead>
 					<tr>
 						<th colspan="2">Tarea</th>
 						<th colspan="4">Fechas</th>
-						<th colspan="3">Métricas</th>
+						<th colspan="5">Métricas</th>
 					</tr>
 					<tr>
 						<th>#</th>
@@ -42,31 +67,128 @@
 						<th>Fecha inicio</th>
 						<th>Fecha entrega</th>
 						<th>Días sin trabajo</th>
-						<th>Lead time</th>
-						<th>Cycle time</th>
-						<th>Touch time</th>
+						<th>Lead time (L)</th>
+						<th>Cycle time (C)</th>
+						<th>Touch time (T)</th>
+						<th>T/C</th>
+						<th>C/L</th>
 					</tr>
 					
 				</thead>
 				<tfoot>
-					<tr></tr>
+					<tr>
+						<th colspan="6">Promedio</th>
+						<td class="text-right">{{ metrics.avg.lead_time.toFixed(2) }}</td>
+						<td class="text-right">{{ metrics.avg.cycle_time.toFixed(2) }}</td>
+						<td class="text-right">{{ metrics.avg.touch_time.toFixed(2) }}</td>
+						<td class="text-right" ng-if="metrics.avg.cycle_time > 0">{{ (metrics.avg.t_c_time).toFixed(2) }}</td>
+						<td class="text-right" ng-if="metrics.avg.lead_time > 0">{{ (metrics.avg.c_l_time).toFixed(2) }}</td>
+					</tr>
+					<tr>
+						<th colspan="6">Variabilidad</th>
+						<td class="text-right" ng-if="metrics.avg.lead_time > 0">{{ (metrics.stddev.lead_time).toFixed(2) }}</td>
+						<td class="text-right" ng-if="metrics.avg.cycle_time > 0">{{ (metrics.stddev.cycle_time).toFixed(2) }}</td>
+						<td class="text-right" ng-if="metrics.avg.touch_time > 0">{{ (metrics.stddev.touch_time).toFixed(2) }}</td>
+						<td class="text-right" ng-if="metrics.stddev.cycle_time">{{ (metrics.stddev.t_c_time).toFixed(2) }}</td>
+						<td class="text-right" ng-if="metrics.stddev.lead_time">{{ (metrics.stddev.c_l_time).toFixed(2) }}</td>
+					</tr>
 				</tfoot>
 				<tbody>
-					<tr class="cos-{{ task.cos }}" ng-repeat="task in tasks" ng-if="task.dates.delivery <= Date">
+					<tr class="cos-{{ task.cos }}" ng-repeat="task in tasks | betweenDates:getDate(dateFrom):getDate(dateTo)">
 						<td class="text-right">{{ task.id }}</td>
 						<td>{{ task.name }}</td>
 						<td>{{ task.dates.request | date:'medium' }}</td>
 						<td>{{ task.dates.start | date:'medium' }}</td>
 						<td>{{ task.dates.delivery | date:'medium' }}</td>
 						<td class="text-right">{{ task.idle_time }}</td>
-						<td class="text-right">{{ Math.floor((task.dates.delivery - task.dates.request) / (60 * 60 * 24 * 1000)) }}</td>
-						<td class="text-right">{{ Math.floor((task.dates.delivery - task.dates.start) / (60 * 60 * 24 * 1000)) }}</td> <!--  falta restar numero de dias habiles entre ambas fechas -->
-						<td class="text-right">{{ (Math.floor((task.dates.delivery - task.dates.request) / (60 * 60 * 24 * 1000))) - task.idle_time }}</td>
+						<td class="text-right">{{ task.lead_time.toFixed(2) }}</td>
+						<td class="text-right">{{ task.cycle_time.toFixed(2) }}</td>
+						<td class="text-right">{{ task.touch_time.toFixed(2) }}</td>
+						<td class="text-right">{{ (task.touch_time / task.cycle_time).toFixed(2) }}</td>
+						<td class="text-right">{{ (task.cycle_time / task.lead_time).toFixed(2) }}</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="col-md-10" ng-if="(tasks | betweenDates:getDate(dateFrom):getDate(dateTo)).length == 0">
+				<blockquote>
+					No hay tareas para mostrar en el rango de fechas indicado.
+				</blockquote>
+			</div>
+			<table class="table table-condensed table-bordered" ng-if="(tasks | betweenDates:getDate(dateFrom):getDate(dateTo)).length > 0">
+				<caption><h4>Resumen de métricas</h4></caption>
+				<thead>
+					<tr>
+						<th>Indicador</th>
+						<th>Significado</th>
+						<th>Valor</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Promedio del Cycle Time</td>
+						<td>Duración promedio de las tareas.</td>
+						<td class="text-right">{{ metrics.avg.cycle_time.toFixed(2) }}</td>
+					</tr>
+					<tr>
+						<td>Promedio del Lead Time</td>
+						<td>Duración promedio de los pedidos.</td>
+						<td class="text-right">{{ metrics.avg.lead_time.toFixed(2) }}</td>
+					</tr>
+					<tr>
+						<td>Variabilidad del Cycle Time</td>
+						<td>Diferencia de complejidad entre las tareas.</td>
+						<td class="text-right">{{ metrics.stddev.cycle_time.toFixed(2) }}</td>
+					</tr>
+					<tr>
+						<td>Promedio Touch Time / Promedio Cycle Time</td>
+						<td>Eficiencia promedio de las tareas.</td>
+						<td class="text-right">{{ metrics.avg.t_c_time.toFixed(2) }}</td>
+					</tr>
+					<tr>
+						<td>Promedio Cycle Time / Promedio Lead Time</td>
+						<td>Eficiencia promedio de los pedidos</td>
+						<td class="text-right">{{ metrics.avg.c_l_time.toFixed(2) }}</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
-		<script src="bower_components/jquery/dist/jquery.min.js"></script>
 		<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+		<script src="bower_components/moment/min/moment-with-locales.min.js"></script>
+		<script src="bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+		<script src="bower_components/angular-datepicker/dist/index.min.js"></script>
+		<script src="bower_components/angular-datepicker/app/scripts/datePicker.js"></script>
+		<script src="bower_components/angular-datepicker/app/scripts/dateRange.js"></script>
+		<script src="bower_components/angular-datepicker/app/scripts/input.js"></script>
+		<script type="text/javascript">
+	        $(document).ready(function () {
+	        	var CurrentDate = new Date();
+	        	var PrevDate = new Date();
+	        	PrevDate.setMonth(CurrentDate.getMonth() - 1);
+	        	
+	            $('#date-from').datetimepicker({
+	            	pickTime: false,
+	            	language: 'es',
+	            	defaultDate: PrevDate
+	            }).datetimepicker('show');
+	            $('#date-to').datetimepicker({
+	            	pickTime: false,
+	            	language: 'es',
+	            	defaultDate: CurrentDate
+	            });
+	            
+	            angular.element('#date-from input').trigger('change');
+	            angular.element('#date-to input').trigger('change');
+	            
+	            $('#date-from').on('dp.change', function (e) {
+	               $('#date-to').data("DateTimePicker").setMinDate(e.date);
+	               angular.element('#date-from input').trigger('change');
+	               
+	            });
+	            $('#date-to').on('dp.change', function (e) {
+	               $('#date-from').data("DateTimePicker").setMaxDate(e.date);
+	               angular.element('#date-to input').trigger('change');
+	            });
+	        });
+	    </script>
 	</body>
 </html>
