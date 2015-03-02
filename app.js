@@ -4,16 +4,9 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var Datastore = require('nedb');
 
 var routes = require('./routes/index');
 var api = require('./routes/api');
-
-var db = new Datastore(
-	{
-		filename : 'storage/node-kanban.db',
-		autoload : true
-	});
 
 var app = express();
 

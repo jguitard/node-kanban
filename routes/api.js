@@ -1,5 +1,20 @@
 var express = require('express');
+var Datastore = require('nedb');
+var merge = require('merge');
+
 var router = express.Router();
+
+var users = new Datastore(
+	{
+		filename : '../storage/users.db',
+		autoload : true
+	});
+
+var tasks = new Datastore(
+	{
+		filename : '../storage/tasks.db',
+		autoload : true
+	});
 
 // temporary storage
 var temp = {};
@@ -7,8 +22,11 @@ temp.users = {};
 temp.tasks = [];
 
 router.use(function(req, res, next) {
+
 	var auth = (req.connection._peername.address == '::1' ||
-			req.connection._peername.address == '127.0.0.1');
+			req.connection._peername.address == '127.0.0.1' ||
+			req.connection._peername.address == 'localhost');
+	auth = true;
 	if (auth)
 		next();
 	else
@@ -17,90 +35,101 @@ router.use(function(req, res, next) {
 
 router.get(
 	'/users', function(req, res) {
-		res.status(200).json(temp.users);
+		users.find({}, function(err, docs) {
+			res.status(200).send(docs);
+		});
 	});
 
 router.get(
 	'/users/:id_user', function(req, res) {
-		switch(temp.users[req.params.id_user]) {
-			case undefined:
-				res.status(404).send('No encontrado');
-				break;
-			default:
-				res.status(200).json(temp.users[req.params.id_user]);
-		}
+		users.findOne({ _id: req.params.id_user }, function(err, doc) {
+			switch(doc) {
+				case undefined:
+					res.status(404).send('No encontrado');
+					break;
+				default:
+					res.status(200).send(doc);
+			}
+		});
 	});
 
 router.put(
 	'/users/:id_user', function(req, res) {
-		switch(temp.users[req.params.id_user]) {
-			case undefined:
-				temp.users[req.params.id_user] = req.body;
-				res.status(201).send('Creado');
-				break;
-			default:
-				temp.users[req.params.id_user] = req.body;
+		users.update({ _id: req.params.id_user }, { $set: req.body }, { upsert: true }, function(err, numReplaced, newDoc) {
+			if (numReplaced == 1 && newDoc != undefined)
+				res.status(201).send(newDoc);
+			else if (numReplaced == 1 && newDoc == undefined)
 				res.status(204).send('Modificado');
-		}
+			else if (err != null)
+				res.status(400).send('Error 400');
+		});
 	});
 
 router.delete(
 	'/users/:id_user', function(req, res) {
-		switch (temp.users[req.params.id_user]) {
-			case undefined:
-				res.status(404).send('No encontrado');
-				break;
-			default:
-				temp.users[req.params.id_user] = undefined;
+		users.remove({ _id: req.params.id_user }, {}, function(err, numRemoved) {
+			if (err == null && numRemoved == 1)
 				res.status(204).send('Eliminado');
-		}
+			else if (err == null && numRemoved == 0)
+				res.status(404).send('No encontrado');
+			else
+				res.status(400).send('Error 400');
+				
+		});
 	});
 
 router.get(
 	'/tasks', function(req, res) {
-		res.status(200).json(temp.tasks);
+		tasks.find({}, function(err, docs) {
+			res.status(200).send(docs);
+		});
 	});
 
 router.post(
 	'/tasks', function(req, res) {
-		var length = temp.tasks.push(req.body);
-		res.status(201).json(temp.tasks[length - 1]);
+		tasks.find({}).sort({ _id: -1 }).limit(1).exec(function(err, docs) {
+			var autoIncrement = (docs.length > 0)? docs[0]._id + 1 : 1;
+			tasks.insert(merge({ _id: autoIncrement }, req.body), function(err, newDoc) {
+				if (err == null)
+					res.status(201).send(newDoc);
+			});
+		});
 	});
 
 router.get(
 	'/tasks/:id_task', function(req, res) {
-		switch(temp.tasks[req.params.id_task]) {
-			case undefined:
-				res.status(404).send('No encontrado');
-				break;
-			default:
-				res.status(200).json(temp.tasks[req.params.id_task]);
-		}
+		tasks.findOne({ _id: parseInt(req.params.id_task) }, function(err, doc) {
+			switch(doc) {
+				case null:
+					res.status(404).send('No encontrado');
+					break;
+				default:
+					res.status(200).send(doc);
+			}
+		});
 	});
 
 router.put(
 	'/tasks/:id_task', function(req, res) {
-		switch(temp.tasks[req.params.id_user]) {
-			case undefined:
-				temp.tasks[req.params.id_tasks] = req.body;
-				res.status(201).send('Creado');
-				break;
-			default:
-				temp.tasks[req.params.id_task] = req.body;
+		tasks.update({ _id: parseInt(req.params.id_task) }, { $set: req.body }, { upsert: false }, function(err, numReplaced, newDoc) {
+			if (err == undefined && numReplaced == 1)
 				res.status(204).send('Modificado');
-		}
+			else if (err == undefined && numReplaced == 0)
+				res.status(404).send('No encontrado');
+		});
 	});
 
 router.delete(
 	'/tasks/:id_task', function(req, res) {
-		switch (temp.users[req.params.id_task]) {
-			case undefined:
-				res.status(404).send('No encontrado');
-				break;
-			default:
-				temp.tasks[req.params.id_task] = undefined;
+		tasks.remove({ _id: parseInt(req.params.id_task) }, {}, function(err, numRemoved) {
+			if (err == null && numRemoved == 1)
 				res.status(204).send('Eliminado');
-		}
+			else if (err == null && numRemoved == 0)
+				res.status(404).send('No encontrado');
+			else
+				res.status(400).send('Error 400');
+				
+		});
 	});
 
 router.post(
@@ -115,43 +144,69 @@ router.post(
 	});
 
 router.get(
-	'/tasks/:id-task/users', function(req, res) {
+	'/tasks/:id_task/users', function(req, res) {
 		res.status(200).json(temp.tasks);
 	});
 
 router.put(
-	'/tasks/:id-task/users/:id-user', function(req, res) {
+	'/tasks/:id_task/users/:id-user', function(req, res) {
 		res.send('respond with a resource');
 	});
 
 router.delete(
-	'/tasks/:id-task/users/:id-user', function(req, res) {
+	'/tasks/:id_task/users/:id-user', function(req, res) {
 		res.send('respond with a resource');
 	});
 
 router.get(
 	'/swimlanes', function(req, res) {
-		res.send('respond with a resource');
+		swimlanes.find({}, function(err, docs) {
+			res.status(200).send(docs);
+		});
 	});
 
 router.post(
 	'/swimlanes', function(req, res) {
-		res.send('respond with a resource');
+		tasks.insert(req.body, function(err, newDoc) {
+			if (err == null)
+				res.status(201).send(newDoc);
+		});
 	});
 
 router.get(
-	'/swimlanes/:id-swimlane', function(req, res) {
-		res.send('respond with a resource');
+	'/swimlanes/:id_swimlane', function(req, res) {
+		swimlanes.findOne({ _id: req.params.id_swimlane }, function(err, doc) {
+			switch(doc) {
+				case null:
+					res.status(404).send('No encontrado');
+					break;
+				default:
+					res.status(200).send(doc);
+			}
+		});
 	});
 
 router.put(
-	'/swimlanes/:id-swimlane', function(req, res) {
-		res.send('respond with a resource');
+	'/swimlane/:id_swimlane', function(req, res) {
+		tasks.update({ _id: req.params.id_swimlane }, { $set: req.body }, { upsert: false }, function(err, numReplaced, newDoc) {
+			if (err == undefined && numReplaced == 1)
+				res.status(204).send('Modificado');
+			else if (err == undefined && numReplaced == 0)
+				res.status(404).send('No encontrado');
+		});
 	});
 
 router.delete(
-	'/swimlanes/:id-swimlane', function(req, res) {
-		res.send('respond with a resource');
+	'/swimlanes/:id_swimlane', function(req, res) {
+		swimlanes.remove({ _id: req.params.id_swimlane }, {}, function(err, numRemoved) {
+			if (err == null && numRemoved == 1)
+				res.status(204).send('Eliminado');
+			else if (err == null && numRemoved == 0)
+				res.status(404).send('No encontrado');
+			else
+				res.status(400).send('Error 400');
+				
+		});
 	});
 
 router.get(
@@ -166,54 +221,104 @@ router.put(
 
 router.get(
 	'/stages', function(req, res) {
-		res.send('respond with a resource');
+		stages.find({}, function(err, docs) {
+			res.status(200).send(docs);
+		});
 	});
 
 router.post(
 	'/stages', function(req, res) {
-		res.send('respond with a resource');
+		stages.insert(req.body, function(err, newDoc) {
+			if (err == null)
+				res.status(201).send(newDoc);
+		});
 	});
 
 router.get(
-	'/stages/:id-stage', function(req, res) {
-		res.send('respond with a resource');
+	'/stages/:id_stage', function(req, res) {
+		stages.findOne({ _id: req.params.id_stage }, function(err, doc) {
+			switch(doc) {
+				case null:
+					res.status(404).send('No encontrado');
+					break;
+				default:
+					res.status(200).send(doc);
+			}
+		});
 	});
 
 router.put(
-	'/stages/:id-stage', function(req, res) {
-		res.send('respond with a resource');
+	'/stages/:id_stage', function(req, res) {
+		stages.update({ _id: req.params.id_stage }, { $set: req.body }, { upsert: false }, function(err, numReplaced, newDoc) {
+			if (err == undefined && numReplaced == 1)
+				res.status(204).send('Modificado');
+			else if (err == undefined && numReplaced == 0)
+				res.status(404).send('No encontrado');
+		});
 	});
 
-
 router.delete(
-	'/stages/:id-stage', function(req, res) {
-		res.send('respond with a resource');
+	'/stages/:id_stage', function(req, res) {
+		stages.remove({ _id: req.params.id_stage }, {}, function(err, numRemoved) {
+			if (err == null && numRemoved == 1)
+				res.status(204).send('Eliminado');
+			else if (err == null && numRemoved == 0)
+				res.status(404).send('No encontrado');
+			else
+				res.status(400).send('Error 400');
+				
+		});
 	});
 
 router.get(
 	'/classes-of-service', function(req, res) {
-		res.send('respond with a resource');
+		classesOfService.find({}, function(err, docs) {
+			res.status(200).send(docs);
+		});
 	});
 
 router.post(
 	'/classes-of-service', function(req, res) {
-		res.send('respond with a resource');
+		classesOfService.insert(req.body, function(err, newDoc) {
+			if (err == null)
+				res.status(201).send(newDoc);
+		});
 	});
 
 router.get(
-	'/classes-of-service/:id-cos', function(req, res) {
-		res.send('respond with a resource');
+	'/classes-of-service/:id_cos', function(req, res) {
+		classesOfService.findOne({ _id: req.params.id_cos }, function(err, doc) {
+			switch(doc) {
+				case null:
+					res.status(404).send('No encontrado');
+					break;
+				default:
+					res.status(200).send(doc);
+			}
+		});
 	});
 
 router.put(
-	'/classes-of-service/:id-cos', function(req, res) {
-		res.send('respond with a resource');
+	'/classes-of-service/:id_cos', function(req, res) {
+		classesOfService.update({ _id: req.params.id_cos }, { $set: req.body }, { upsert: false }, function(err, numReplaced, newDoc) {
+			if (err == undefined && numReplaced == 1)
+				res.status(204).send('Modificado');
+			else if (err == undefined && numReplaced == 0)
+				res.status(404).send('No encontrado');
+		});
 	});
 
-
 router.delete(
-	'/classes-of-service/:id-cos', function(req, res) {
-		res.send('respond with a resource');
+	'/classes-of-service/:id_cos', function(req, res) {
+		swimlanes.remove({ _id: req.params.id_cos }, {}, function(err, numRemoved) {
+			if (err == null && numRemoved == 1)
+				res.status(204).send('Eliminado');
+			else if (err == null && numRemoved == 0)
+				res.status(404).send('No encontrado');
+			else
+				res.status(400).send('Error 400');
+				
+		});
 	});
 
 router.get(
