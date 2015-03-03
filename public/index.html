@@ -46,9 +46,9 @@
 					<tr ng-repeat="swimlane in swimlanes">
 						<th>{{ swimlane.name }}</th>
 						<td>
-							<div class="panel cos-{{ task.cos }}" ng-repeat="task in tasks" ng-if="task.swimlane == swimlane.name && task.stage == '' && task.wip == 'pre'">
+							<div class="panel cos-{{ task.cos }}" ng-repeat="task in tasks" ng-if="task.swimlane == swimlane._id && task.stage == null && task.wip == null">
 								<div class="panel-heading">
-									<strong>#{{ task.id }}</strong> {{task.name}}
+									<strong>#{{ task._id }}</strong> {{task.name}}
 								</div>
 								<div class="panel-body">
 									<div ng-repeat="item in task.items"><span class="glyphicon" ng-class="{ 'glyphicon-ok': item.done, 'glyphicon-minus': !item.done }"></span> {{ item.name }}</div>
@@ -62,7 +62,7 @@
 						<td ng-repeat-start="stage in stages" ng-show="stage.wip.pre > 0" ng-style="{ 'visibility': ( ((swimlane.only_stages == undefined || (swimlane.only_stages != undefined && swimlane.only_stages.pre.indexOf(stage.name) != -1) ))? 'visible' : 'hidden' ) }">
 							<div class="panel cos-{{ task.cos }}" ng-repeat="task in tasks" ng-if="task.swimlane == swimlane.name && task.stage == stage.name && task.wip == 'pre'">
 								<div class="panel-heading">
-									<strong>#{{ task.id }}</strong> {{task.name}}
+									<strong>#{{ task._id }}</strong> {{task.name}}
 								</div>
 								<div class="panel-body">
 									<div ng-repeat="item in task.items"><span class="glyphicon" ng-class="{ 'glyphicon-ok': item.done, 'glyphicon-minus': !item.done }"></span> {{ item.name }}</div>
@@ -76,7 +76,7 @@
 						<td ng-show="stage.wip.task > 0" ng-style="{ 'visibility': ( ((swimlane.only_stages == undefined || (swimlane.only_stages != undefined && swimlane.only_stages.task.indexOf(stage.name) != -1) ))? 'visible' : 'hidden' ) }">
 							<div class="panel cos-{{ task.cos }}" ng-repeat="task in tasks" ng-if="task.swimlane == swimlane.name && task.stage == stage.name && task.wip == 'task'">
 								<div class="panel-heading">
-									<strong>#{{ task.id }}</strong> {{task.name}}
+									<strong>#{{ task._id }}</strong> {{task.name}}
 								</div>
 								<div class="panel-body">
 									<div ng-repeat="item in task.items"><span class="glyphicon" ng-class="{ 'glyphicon-ok': item.done, 'glyphicon-minus': !item.done }"></span> {{ item.name }}</div>
@@ -90,7 +90,7 @@
 						<td ng-show="stage.wip.post > 0" ng-style="{ 'visibility': ( ((swimlane.only_stages == undefined || (swimlane.only_stages != undefined && swimlane.only_stages.post.indexOf(stage.name) != -1) ))? 'visible' : 'hidden' ) }" ng-repeat-end>
 							<div class="panel cos-{{ task.cos }}" ng-repeat="task in tasks" ng-if="task.swimlane == swimlane.name && task.stage == stage.name && task.wip == 'post'">
 								<div class="panel-heading">
-									<strong>#{{ task.id }}</strong> {{task.name}}
+									<strong>#{{ task._id }}</strong> {{task.name}}
 								</div>
 								<div class="panel-body">
 									<div ng-repeat="item in task.items"><span class="glyphicon" ng-class="{ 'glyphicon-ok': item.done, 'glyphicon-minus': !item.done }"></span> {{ item.name }}</div>
@@ -104,7 +104,7 @@
 						<td>
 							<div class="panel cos-{{ task.cos }}" ng-repeat="task in tasks" ng-if="task.swimlane == swimlane.name && task.stage == '' && task.wip == 'post'">
 								<div class="panel-heading">
-									<strong>#{{ task.id }}</strong> {{task.name}}
+									<strong>#{{ task._id }}</strong> {{task.name}}
 								</div>
 								<div class="panel-body">
 									<div ng-repeat="item in task.items"><span class="glyphicon" ng-class="{ 'glyphicon-ok': item.done, 'glyphicon-minus': !item.done }"></span> {{ item.name }}</div>
@@ -120,7 +120,7 @@
 			</table>
 			<div class="pull-bottom pull-right cos">
 				<strong>Clases de servicio</strong>
-				<span class="cos-{{ class_of_service.priority }}" ng-repeat="class_of_service in classes_of_service"><span class="glyphicon glyphicon-tag"></span> {{ class_of_service.name }}</span>
+				<span class="cos-{{ class_of_service._id }}" ng-repeat="class_of_service in classes_of_service"><span class="glyphicon glyphicon-tag"></span> {{ class_of_service.name }}</span>
 			</div>
 		</div>
 		<script src="bower_components/jquery/dist/jquery.min.js"></script>

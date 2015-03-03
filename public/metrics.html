@@ -95,7 +95,7 @@
 				</tfoot>
 				<tbody>
 					<tr class="cos-{{ task.cos }}" ng-repeat="task in tasks | betweenDates:getDate(dateFrom):getDate(dateTo)">
-						<td class="text-right">{{ task.id }}</td>
+						<td class="text-right">{{ task._id }}</td>
 						<td>{{ task.name }}</td>
 						<td>{{ task.dates.request | date:'medium' }}</td>
 						<td>{{ task.dates.start | date:'medium' }}</td>

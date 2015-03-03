@@ -16,6 +16,24 @@ var tasks = new Datastore(
 		autoload : true
 	});
 
+var swimlanes = new Datastore(
+	{
+		filename : '../storage/swimlanes.db',
+		autoload : true
+	});
+
+var stages = new Datastore(
+	{
+		filename : '../storage/stages.db',
+		autoload : true
+	});
+
+var classesOfService = new Datastore(
+	{
+		filename : '../storage/classes-of-service.db',
+		autoload : true
+	});
+
 // temporary storage
 var temp = {};
 temp.users = {};
@@ -89,6 +107,11 @@ router.post(
 	'/tasks', function(req, res) {
 		tasks.find({}).sort({ _id: -1 }).limit(1).exec(function(err, docs) {
 			var autoIncrement = (docs.length > 0)? docs[0]._id + 1 : 1;
+			var items = req.body.items;
+			var newItems = [];
+			for(var i = 0; i < items.length; i++)
+				newItems.push({ name: items[i], done: false });
+			req.body.items = newItems;
 			tasks.insert(merge({ _id: autoIncrement }, req.body), function(err, newDoc) {
 				if (err == null)
 					res.status(201).send(newDoc);
@@ -167,7 +190,7 @@ router.get(
 
 router.post(
 	'/swimlanes', function(req, res) {
-		tasks.insert(req.body, function(err, newDoc) {
+		swimlanes.insert(req.body, function(err, newDoc) {
 			if (err == null)
 				res.status(201).send(newDoc);
 		});
@@ -188,7 +211,7 @@ router.get(
 
 router.put(
 	'/swimlane/:id_swimlane', function(req, res) {
-		tasks.update({ _id: req.params.id_swimlane }, { $set: req.body }, { upsert: false }, function(err, numReplaced, newDoc) {
+		swimlanes.update({ _id: req.params.id_swimlane }, { $set: req.body }, { upsert: false }, function(err, numReplaced, newDoc) {
 			if (err == undefined && numReplaced == 1)
 				res.status(204).send('Modificado');
 			else if (err == undefined && numReplaced == 0)
@@ -226,11 +249,20 @@ router.get(
 		});
 	});
 
+/*
+ * router.post( '/stages', function(req, res) { stages.insert(req.body,
+ * function(err, newDoc) { if (err == null) res.status(201).send(newDoc); });
+ * });
+ */
+
 router.post(
 	'/stages', function(req, res) {
-		stages.insert(req.body, function(err, newDoc) {
-			if (err == null)
-				res.status(201).send(newDoc);
+		stages.find({}).sort({ _id: -1 }).limit(1).exec(function(err, docs) {
+			var autoIncrement = (docs.length > 0)? docs[0]._id + 1 : 1;
+			stages.insert(merge({ _id: autoIncrement }, req.body), function(err, newDoc) {
+				if (err == null)
+					res.status(201).send(newDoc);
+			});
 		});
 	});
 
@@ -277,11 +309,20 @@ router.get(
 		});
 	});
 
+/*
+ * router.post( '/classes-of-service', function(req, res) {
+ * classesOfService.insert(req.body, function(err, newDoc) { if (err == null)
+ * res.status(201).send(newDoc); }); });
+ */
+
 router.post(
 	'/classes-of-service', function(req, res) {
-		classesOfService.insert(req.body, function(err, newDoc) {
-			if (err == null)
-				res.status(201).send(newDoc);
+		classesOfService.find({}).sort({ _id: -1 }).limit(1).exec(function(err, docs) {
+			var autoIncrement = (docs.length > 0)? docs[0]._id + 1 : 1;
+			classesOfService.insert(merge({ _id: autoIncrement }, req.body), function(err, newDoc) {
+				if (err == null)
+					res.status(201).send(newDoc);
+			});
 		});
 	});
 

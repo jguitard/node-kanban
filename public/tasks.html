@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=1920, height=1080, initial-scale=1" />
+		<title>node-kanban: Añadir Tarea</title>
+		<script src="bower_components/jquery/dist/jquery.min.js"></script>
+		<script src="bower_components/angular/angular.js"></script>
+		<script src="bower_components/angular-resource/angular-resource.min.js"></script>
+		
+		<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+		<link rel="stylesheet" href="../bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css">
+		<link rel="stylesheet" href="../bower_components/angular-datepicker/dist/index.min.css">
+		<link rel="stylesheet" href="../bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css">
+		
+		<link rel="stylesheet" href="../stylesheets/style.css">
+		
+		<script src="javascripts/app.js"></script>
+		<script src="javascripts/controllers/ClientController.js"></script>
+	</head>
+	<body ng-app="NodeKanbanApp">
+		<nav class="navbar navbar-default" role="navigation">
+			<div class="navbar-header">
+				<div class="navbar-brand navbar-left">
+					NodeKanban
+				</div>
+			</div>
+			<div class="navbar-brand">
+				Tablero: Desarrollo
+			</div>
+			<div class="navbar-brand navbar-right">
+				Dirección IP: 123.234.255.23
+			</div>
+		</nav>
+		<div ng-controller="ClientController" class="container-fluid">
+			<form class="form-horizontal" role="form" method="post" action="/api/tasks" enctype="application/json">
+				<div class="form-group">
+					<label class="col-xs-2 control-label">Nombre</label>
+					<div class="col-xs-4">
+						<input class="form-control" type="text" name="name" required>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-2 control-label">Ámbitos</label>
+					<div class="col-xs-4">
+						<select class="form-control" name="items" data-role="tagsinput" multiple></select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-2 control-label">Clase de servicio</label>
+					<div class="col-xs-4">
+						<select class="form-control" name="cos" required>
+							<option value="">Seleccionar...</option>
+							<option ng-repeat="cos in classesOfService" value="{{ cos._id }}">{{ cos.name }}</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-2 control-label">Carril</label>
+					<div class="col-xs-4">
+						<select class="form-control" name="swimlane" required>
+							<option value="">Seleccionar...</option>
+							<option ng-repeat="swimlane in swimlanes" value="{{ swimlane._id }}">{{ swimlane.name }}</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-xs-offset-2 col-xs-4">
+						<button class="btn btn-default" type="submit">Guardar</button>
+					</div>
+				</div>
+			</form>
+			<table class="table table-condensed table-bordered" ng-if="tasks.length > 0">
+				<caption><h4>Tareas</h4></caption>
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Nombre</th>
+						<th>Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="cos-{{ task.cos }}" ng-repeat="task in tasks | filter:query | orderBy: '-_id'" data-id="{{ task._id }}">
+						<td class="text-right">{{ task._id }}</td>
+						<td>{{ task.name }}</td>
+						<td>
+							<button ng-click="editTask(task._id)" class="btn btn-primary btn-xs">Modificar</button>
+							<button ng-click="pullTask(task._id)" class="btn btn-primary btn-xs">Traer a la siguiente etapa</button>
+							<button ng-click="pullTask(task._id)" class="btn btn-primary btn-xs">Asignar responsable</button>
+							<button ng-click="pullTask(task._id)" class="btn btn-primary btn-xs">Quitar responsable</button>
+							<button ng-click="pullTask(task._id)" class="btn btn-primary btn-xs">Marcar ámbito</button>
+							<button ng-click="deleteTask(task._id)" class="btn btn-primary btn-xs">Borrar</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="col-md-10" ng-if="tasks.length == 0">
+				<blockquote>
+					No hay tareas.
+				</blockquote>
+			</div>
+		</div>
+		<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+		<script src="bower_components/moment/min/moment-with-locales.min.js"></script>
+		<script src="bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+		<script src="bower_components/angular-datepicker/dist/index.min.js"></script>
+		<script src="bower_components/angular-datepicker/app/scripts/datePicker.js"></script>
+		<script src="bower_components/angular-datepicker/app/scripts/dateRange.js"></script>
+		<script src="bower_components/angular-datepicker/app/scripts/input.js"></script>
+		<script src="bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
+		<script src="bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput-angular.min.js"></script>
+		<script src="bower_components/jquery-form/jquery.form.js"></script>
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('form').bind('reset', function(event) {
+					$(this).find('input').val('');
+					$(this).find('textarea').text('');
+					$(this).find('select').html('');
+					$(this).find('select').html('');
+					$(this).find('div.bootstrap-tagsinput').find('span').remove();
+				});
+		        $('form[method="post"][action="/api/tasks"]').ajaxForm(function(data) {
+					console.log(data);
+		        	//$('form[method="post"][action="/api/tasks"]').trigger('reset');
+		        	window.location.href = '/tasks.html';
+		        });
+		        $('table').on('click', 'button[role="edit"]', function(event) {
+		        	var id = $(event.target).closest('tr').data('id');
+		        	$.ajax({
+		        		url: '/api/tasks/' + id,
+		        		method: 'GET',
+		        		dataType: 'json',
+		        		success: function(data) {
+		        			var form = $('form[method="post"][action="/api/tasks"]');
+		        			form.attr('method', 'put');
+		        			form.attr('action', '/api/tasks/' + id);
+		        			$.each(data, function(key, value) {
+		        				form.find('[name="' + key + '"]').val(value);
+		        			});
+		        		}
+		        	});
+		        });
+		        $('button[role="pull"]').bind('click', function(event) {
+		        	alert('pull');
+		        });
+		        $('button[role="delete"]').bind('click', function(event) {
+		        	alert('borrar');
+		        });
+		    });
+	        
+	    </script>
+	</body>
+</html>
